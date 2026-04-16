@@ -18,19 +18,22 @@ const getStyleSheet = makeStyleSheetFromTheme((theme) => {
         container: {
             flex: 1,
             backgroundColor: theme.centerChannelBg,
-            paddingHorizontal: 20,
         },
+
+        // Padding on scroll content, not the ScrollView frame, so the scroll indicator stays at the safe-area edge.
         contentContainerStyle: {
             marginTop: 8,
             flexGrow: 1,
+            paddingHorizontal: 20,
         },
     };
 });
 
 type SettingContainerProps = {
-   children: React.ReactNode;
-   testID?: string;
-}
+    children: React.ReactNode;
+    testID?: string;
+};
+
 const SettingContainer = ({children, testID}: SettingContainerProps) => {
     const theme = useTheme();
     const styles = getStyleSheet(theme);

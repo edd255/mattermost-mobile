@@ -64,6 +64,21 @@ export const apiGetClientLicense = async (baseUrl: string): Promise<any> => {
 };
 
 /**
+ * Get client config (old format), same shape as the mobile app uses for About.
+ * @param {string} baseUrl - the base server URL
+ * @return {Object} returns {config} on success or {error, status} on failure
+ */
+export const apiGetClientConfigOld = async (baseUrl: string): Promise<any> => {
+    try {
+        const response = await client.get(`${baseUrl}/api/v4/config/client?format=old`);
+
+        return {config: response.data};
+    } catch (err) {
+        return getResponseFromError(err);
+    }
+};
+
+/**
  * Get configuration.
  * See https://api.mattermost.com/#operation/GetConfig
  * @param {string} baseUrl - the base server URL
@@ -392,6 +407,7 @@ export const System = {
     apiDeleteRemoteCluster,
     apiEnsureAtLeastOneConfirmedRemoteCluster,
     apiEmailTest,
+    apiGetClientConfigOld,
     apiGetClientLicense,
     apiGetConfig,
     apiGetRemoteClusters,
