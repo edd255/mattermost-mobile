@@ -57,6 +57,7 @@ import static com.mattermost.helpers.database_extension.UserKt.getLastPictureUpd
 public class CustomPushNotificationHelper {
     public static final String CHANNEL_HIGH_IMPORTANCE_ID = "channel_01";
     public static final String CHANNEL_MIN_IMPORTANCE_ID = "channel_02";
+    public static final String KEY_MARK_AS_READ = "MARK_AS_READ";
     public static final String KEY_TEXT_REPLY = "CAN_REPLY";
     public static final String NOTIFICATION_ID = "notificationId";
     public static final String NOTIFICATION = "notification";
@@ -141,6 +142,33 @@ public class CustomPushNotificationHelper {
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")
+    private static void addNotificationMarkAsReadAction(Context context, NotificationCompat.Builder notification, Bundle bundle, int notificationId) {
+        String channelId = bundle.getString("channel_id");
+        String serverUrl = bundle.getString("server_url");
+
+        if (android.text.TextUtils.isEmpty(channelId) || serverUrl == null) {
+            return;
+        }
+
+        Intent markAsReadIntent = new Intent(context, NotificationMarkAsReadService.class);
+        markAsReadIntent.setAction(KEY_MARK_AS_READ);
+        markAsReadIntent.putExtra(NOTIFICATION, bundle);
+        markAsReadIntent.putExtra(NOTIFICATION_ID, notificationId);
+
+        PendingIntent markAsReadPendingIntent = PendingIntent.getService(
+                context,
+                notificationId,
+                markAsReadIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        int icon = android.R.drawable.ic_menu_view;
+        CharSequence title = context.getString(R.string.notification_action_mark_as_read);
+        NotificationCompat.Action markAsReadAction = new NotificationCompat.Action.Builder(icon, title, markAsReadPendingIntent).build();
+
+        notification.addAction(markAsReadAction);
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
     private static void addNotificationReplyAction(Context context, NotificationCompat.Builder notification, Bundle bundle, int notificationId) {
         String postId = bundle.getString("post_id");
         String serverUrl = bundle.getString("server_url");
@@ -206,6 +234,7 @@ public class CustomPushNotificationHelper {
         setNotificationChannel(context, notification);
         setNotificationDeleteIntent(context, notification, bundle, notificationId);
         addNotificationReplyAction(context, notification, bundle, notificationId);
+        addNotificationMarkAsReadAction(context, notification, bundle, notificationId);
 
         notification
                 .setContentIntent(intent)

@@ -15,7 +15,6 @@ import com.mattermost.turbolog.TurboLog;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 
-
 public class Network {
     private static ApiClientModuleImpl clientModule;
     private static final WritableMap clientOptions = Arguments.createMap();
@@ -48,6 +47,11 @@ public class Network {
     public static Response postSync(String baseUrl, String endpoint, ReadableMap options) {
         createClientIfNeeded(baseUrl);
         return clientModule.postSync(baseUrl, endpoint, options);
+    }
+
+    public static void put(String baseUrl, String endpoint, ReadableMap options, Promise promise) {
+        createClientIfNeeded(baseUrl);
+        clientModule.put(baseUrl, endpoint, options, promise);
     }
 
     private static void createClientOptions() {

@@ -87,6 +87,9 @@
       <service android:name=".NotificationDismissService"
                 android:enabled="true"
                 android:exported="false" />
+      <service android:name=".NotificationMarkAsReadService"
+                android:enabled="true"
+                android:exported="false" />
       <receiver android:name=".NotificationReplyBroadcastReceiver"
                android:enabled="true"
                android:exported="false" />
